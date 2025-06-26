@@ -206,11 +206,19 @@ def should_notify(goods_id, model_info):
     key = f"{goods_id}_{model_info['color']}"
     current_time = time.time()
     
+    # 如果使用高频检查模式，减少通知间隔时间
+    if os.environ.get("RAPID_CHECK", "").lower() == "true":
+        # 高频模式下，每5分钟最多通知一次
+        notification_interval = 5 * 60  # 5分钟
+    else:
+        # 普通模式下，每6小时最多通知一次
+        notification_interval = 6 * 3600  # 6小时
+    
     # 检查是否需要通知
     if key in notification_history:
         last_notify_time = notification_history[key]
-        # 如果在6小时内已经通知过，则不再通知
-        if current_time - last_notify_time < 6 * 3600:
+        # 如果在规定时间内已经通知过，则不再通知
+        if current_time - last_notify_time < notification_interval:
             return False
     
     # 更新通知历史
@@ -285,12 +293,98 @@ def main():
         status = "有库存" if info["has_stock"] else "无库存"
         print(f"{name}: {status}")
     
-    # 测试钉钉通知
-    test_title = "库存监控测试通知"
-    test_content = "这是一条测试通知，确认钉钉机器人配置成功！\n\n当前时间: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    send_dingtalk_notification(test_title, test_content)
-    
     return "检查完成"
 
+# 高频检查函数 - 每15秒检查一次
+def rapid_check(duration_seconds=300, interval_seconds=15):
+    """
+    高频检查库存
+    
+    参数:
+    duration_seconds: 持续检查的总时间（秒）
+    interval_seconds: 检查间隔（秒）
+    """
+    start_time = time.time()
+    end_time = start_time + duration_seconds
+    check_count = 0
+    
+    print(f"开始高频检查，将持续{duration_seconds}秒，每{interval_seconds}秒检查一次")
+    
+    # 首次运行时发送测试通知
+    test_title = "库存监控高频检查开始"
+    test_content = f"高频检查已启动，将每{interval_seconds}秒检查一次，持续{duration_seconds}秒\n\n开始时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+    send_dingtalk_notification(test_title, test_content)
+    
+    while time.time() < end_time:
+        check_count += 1
+        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        print(f"第{check_count}次检查，时间: {current_time}")
+        
+        main()  # 执行主检查函数
+        
+        # 计算剩余时间
+        remaining = end_time - time.time()
+        if remaining <= 0:
+            break
+            
+        # 等待到下次检查
+        sleep_time = min(interval_seconds, remaining)
+        if sleep_time > 0:
+            print(f"等待{sleep_time:.1f}秒后进行下次检查...")
+            time.sleep(sleep_time)
+    
+    # 检查结束后发送通知
+    end_notification = f"高频检查结束，共执行了{check_count}次检查\n\n结束时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+    send_dingtalk_notification("库存监控高频检查结束", end_notification)
+    
+    print(f"高频检查结束，共执行了{check_count}次检查")
+
+# 本地高频检查 - 按Ctrl+C停止
+def local_rapid_check(interval_seconds=15):
+    """本地高频检查，直到用户按Ctrl+C停止"""
+    try:
+        check_count = 0
+        start_time = datetime.now()
+        print(f"开始本地高频检查，每{interval_seconds}秒检查一次，按Ctrl+C停止")
+        
+        # 发送开始通知
+        start_notification = f"本地高频检查已启动，将每{interval_seconds}秒检查一次\n\n开始时间: {start_time.strftime('%Y-%m-%d %H:%M:%S')}"
+        send_dingtalk_notification("库存监控本地检查开始", start_notification)
+        
+        while True:
+            check_count += 1
+            current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            print(f"\n第{check_count}次检查，时间: {current_time}")
+            
+            main()  # 执行主检查函数
+            
+            print(f"等待{interval_seconds}秒后进行下次检查...")
+            time.sleep(interval_seconds)
+            
+    except KeyboardInterrupt:
+        # 计算总运行时间
+        duration = datetime.now() - start_time
+        hours, remainder = divmod(duration.total_seconds(), 3600)
+        minutes, seconds = divmod(remainder, 60)
+        duration_str = f"{int(hours)}小时{int(minutes)}分{int(seconds)}秒"
+        
+        print("\n用户中断，停止检查")
+        
+        # 发送结束通知
+        end_notification = f"本地高频检查已停止\n\n总计运行: {duration_str}\n共执行检查: {check_count}次\n停止时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+        send_dingtalk_notification("库存监控本地检查结束", end_notification)
+
 if __name__ == "__main__":
-    main()
+    # 根据环境变量选择运行模式
+    if os.environ.get("LOCAL_MODE", "").lower() == "true":
+        # 本地模式 - 直到用户中断
+        interval = int(os.environ.get("CHECK_INTERVAL", "15"))
+        local_rapid_check(interval)
+    elif os.environ.get("RAPID_CHECK", "").lower() == "true":
+        # GitHub Actions中的高频模式 - 持续有限时间
+        duration = int(os.environ.get("CHECK_DURATION", "300"))  # 默认5分钟
+        interval = int(os.environ.get("CHECK_INTERVAL", "15"))   # 默认15秒
+        rapid_check(duration, interval)
+    else:
+        # 普通模式 - 执行一次
+        main()
