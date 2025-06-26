@@ -24,23 +24,8 @@ jobs:
           pip install requests
           
       - name: Run stock checker
-        env:
-          WXPUSHER_APP_TOKEN: ${{ secrets.WXPUSHER_APP_TOKEN }}
-          WXPUSHER_UID: ${{ secrets.WXPUSHER_UID }}
-          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
-          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-          EMAIL_RECEIVER: ${{ secrets.EMAIL_RECEIVER }}
-          DINGTALK_WEBHOOK: ${{ secrets.DINGTALK_WEBHOOK }}
-          DINGTALK_SECRET: ${{ secrets.DINGTALK_SECRET }}
-          RAPID_CHECK: "true"       # 启用高频检查
-          CHECK_DURATION: "300"     # 持续5分钟
-          CHECK_INTERVAL: "15"      # 每15秒检查一次
         run: python stock_checker.py
         
-      - name: Commit and push history files
-        run: |
-          git config --global user.name 'GitHub Actions'
-          git config --global user.email 'actions@github.com'
-          git add stock_history.json notification_history.json || true
-          git commit -m "Update stock history" || true
-          git push || true
+      - name: Always success
+        if: always()
+        run: echo "Job completed"
