@@ -11,7 +11,10 @@ from datetime import datetime
 # 配置信息
 GOODS_LIST = [
     {"id": "995206067625", "name": "华为TC32路由器"},
-    {"id": "994210179268", "name": "塞那骨传导耳机"}
+    {"id": "994210179268", "name": "塞那骨传导耳机"},
+    {"id": "995206173862", "name": "联通商务手提背包"},
+    {"id": "995206162886", "name": "欧普护眼台灯"},
+    {"id": "994210179232", "name": "黑胶高尔夫雨伞"}
 ]
 CITY_CODE = "110"  # 北京
 
@@ -124,7 +127,7 @@ def check_and_notify():
 
 # 高频检查函数
 def main():
-    interval = 3  # 每3秒检查一次
+    interval = 5  # 每5秒检查一次
     
     # 发送开始通知
     start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
