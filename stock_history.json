@@ -243,5 +243,530 @@
         ]
       }
     }
+  },
+  {
+    "timestamp": "2025-06-26 08:05:47",
+    "results": {
+      "华为TC32路由器": {
+        "id": "995206067625",
+        "has_stock": false,
+        "models": [
+          {
+            "model": "华为TC32路由器",
+            "color": "白色",
+            "stock": 0,
+            "price": "299"
+          }
+        ]
+      },
+      "塞那骨传导耳机": {
+        "id": "994210179268",
+        "has_stock": true,
+        "models": [
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "冰雪白",
+            "stock": 0,
+            "price": "189"
+          },
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "阳谷米",
+            "stock": 124,
+            "price": "189"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2025-06-26 08:06:04",
+    "results": {
+      "华为TC32路由器": {
+        "id": "995206067625",
+        "has_stock": false,
+        "models": [
+          {
+            "model": "华为TC32路由器",
+            "color": "白色",
+            "stock": 0,
+            "price": "299"
+          }
+        ]
+      },
+      "塞那骨传导耳机": {
+        "id": "994210179268",
+        "has_stock": true,
+        "models": [
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "冰雪白",
+            "stock": 0,
+            "price": "189"
+          },
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "阳谷米",
+            "stock": 124,
+            "price": "189"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2025-06-26 08:06:21",
+    "results": {
+      "华为TC32路由器": {
+        "id": "995206067625",
+        "has_stock": false,
+        "models": [
+          {
+            "model": "华为TC32路由器",
+            "color": "白色",
+            "stock": 0,
+            "price": "299"
+          }
+        ]
+      },
+      "塞那骨传导耳机": {
+        "id": "994210179268",
+        "has_stock": true,
+        "models": [
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "冰雪白",
+            "stock": 0,
+            "price": "189"
+          },
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "阳谷米",
+            "stock": 124,
+            "price": "189"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2025-06-26 08:06:38",
+    "results": {
+      "华为TC32路由器": {
+        "id": "995206067625",
+        "has_stock": false,
+        "models": [
+          {
+            "model": "华为TC32路由器",
+            "color": "白色",
+            "stock": 0,
+            "price": "299"
+          }
+        ]
+      },
+      "塞那骨传导耳机": {
+        "id": "994210179268",
+        "has_stock": true,
+        "models": [
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "冰雪白",
+            "stock": 0,
+            "price": "189"
+          },
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "阳谷米",
+            "stock": 124,
+            "price": "189"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2025-06-26 08:07:05",
+    "results": {
+      "华为TC32路由器": {
+        "id": "995206067625",
+        "has_stock": false,
+        "models": [
+          {
+            "model": "华为TC32路由器",
+            "color": "白色",
+            "stock": 0,
+            "price": "299"
+          }
+        ]
+      },
+      "塞那骨传导耳机": {
+        "id": "994210179268",
+        "has_stock": true,
+        "models": [
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "冰雪白",
+            "stock": 0,
+            "price": "189"
+          },
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "阳谷米",
+            "stock": 124,
+            "price": "189"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2025-06-26 08:07:22",
+    "results": {
+      "华为TC32路由器": {
+        "id": "995206067625",
+        "has_stock": true,
+        "models": [
+          {
+            "model": "华为TC32路由器",
+            "color": "白色",
+            "stock": 2,
+            "price": "299"
+          }
+        ]
+      },
+      "塞那骨传导耳机": {
+        "id": "994210179268",
+        "has_stock": true,
+        "models": [
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "冰雪白",
+            "stock": 0,
+            "price": "189"
+          },
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "阳谷米",
+            "stock": 126,
+            "price": "189"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2025-06-26 08:07:39",
+    "results": {
+      "华为TC32路由器": {
+        "id": "995206067625",
+        "has_stock": false,
+        "models": [
+          {
+            "model": "华为TC32路由器",
+            "color": "白色",
+            "stock": 0,
+            "price": "299"
+          }
+        ]
+      },
+      "塞那骨传导耳机": {
+        "id": "994210179268",
+        "has_stock": true,
+        "models": [
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "冰雪白",
+            "stock": 0,
+            "price": "189"
+          },
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "阳谷米",
+            "stock": 124,
+            "price": "189"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2025-06-26 08:07:57",
+    "results": {
+      "华为TC32路由器": {
+        "id": "995206067625",
+        "has_stock": true,
+        "models": [
+          {
+            "model": "华为TC32路由器",
+            "color": "白色",
+            "stock": 2,
+            "price": "299"
+          }
+        ]
+      },
+      "塞那骨传导耳机": {
+        "id": "994210179268",
+        "has_stock": true,
+        "models": [
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "冰雪白",
+            "stock": 0,
+            "price": "189"
+          },
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "阳谷米",
+            "stock": 124,
+            "price": "189"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2025-06-26 08:08:24",
+    "results": {
+      "华为TC32路由器": {
+        "id": "995206067625",
+        "has_stock": true,
+        "models": [
+          {
+            "model": "华为TC32路由器",
+            "color": "白色",
+            "stock": 2,
+            "price": "299"
+          }
+        ]
+      },
+      "塞那骨传导耳机": {
+        "id": "994210179268",
+        "has_stock": true,
+        "models": [
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "冰雪白",
+            "stock": 0,
+            "price": "189"
+          },
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "阳谷米",
+            "stock": 124,
+            "price": "189"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2025-06-26 08:08:51",
+    "results": {
+      "华为TC32路由器": {
+        "id": "995206067625",
+        "has_stock": true,
+        "models": [
+          {
+            "model": "华为TC32路由器",
+            "color": "白色",
+            "stock": 2,
+            "price": "299"
+          }
+        ]
+      },
+      "塞那骨传导耳机": {
+        "id": "994210179268",
+        "has_stock": true,
+        "models": [
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "冰雪白",
+            "stock": 0,
+            "price": "189"
+          },
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "阳谷米",
+            "stock": 124,
+            "price": "189"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2025-06-26 08:09:08",
+    "results": {
+      "华为TC32路由器": {
+        "id": "995206067625",
+        "has_stock": true,
+        "models": [
+          {
+            "model": "华为TC32路由器",
+            "color": "白色",
+            "stock": 2,
+            "price": "299"
+          }
+        ]
+      },
+      "塞那骨传导耳机": {
+        "id": "994210179268",
+        "has_stock": true,
+        "models": [
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "冰雪白",
+            "stock": 0,
+            "price": "189"
+          },
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "阳谷米",
+            "stock": 124,
+            "price": "189"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2025-06-26 08:09:24",
+    "results": {
+      "华为TC32路由器": {
+        "id": "995206067625",
+        "has_stock": true,
+        "models": [
+          {
+            "model": "华为TC32路由器",
+            "color": "白色",
+            "stock": 2,
+            "price": "299"
+          }
+        ]
+      },
+      "塞那骨传导耳机": {
+        "id": "994210179268",
+        "has_stock": true,
+        "models": [
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "冰雪白",
+            "stock": 0,
+            "price": "189"
+          },
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "阳谷米",
+            "stock": 124,
+            "price": "189"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2025-06-26 08:09:51",
+    "results": {
+      "华为TC32路由器": {
+        "id": "995206067625",
+        "has_stock": true,
+        "models": [
+          {
+            "model": "华为TC32路由器",
+            "color": "白色",
+            "stock": 2,
+            "price": "299"
+          }
+        ]
+      },
+      "塞那骨传导耳机": {
+        "id": "994210179268",
+        "has_stock": true,
+        "models": [
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "冰雪白",
+            "stock": 0,
+            "price": "189"
+          },
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "阳谷米",
+            "stock": 122,
+            "price": "189"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2025-06-26 08:10:19",
+    "results": {
+      "华为TC32路由器": {
+        "id": "995206067625",
+        "has_stock": true,
+        "models": [
+          {
+            "model": "华为TC32路由器",
+            "color": "白色",
+            "stock": 2,
+            "price": "299"
+          }
+        ]
+      },
+      "塞那骨传导耳机": {
+        "id": "994210179268",
+        "has_stock": true,
+        "models": [
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "冰雪白",
+            "stock": 0,
+            "price": "189"
+          },
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "阳谷米",
+            "stock": 122,
+            "price": "189"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2025-06-26 08:10:45",
+    "results": {
+      "华为TC32路由器": {
+        "id": "995206067625",
+        "has_stock": true,
+        "models": [
+          {
+            "model": "华为TC32路由器",
+            "color": "白色",
+            "stock": 2,
+            "price": "299"
+          }
+        ]
+      },
+      "塞那骨传导耳机": {
+        "id": "994210179268",
+        "has_stock": true,
+        "models": [
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "冰雪白",
+            "stock": 0,
+            "price": "189"
+          },
+          {
+            "model": "塞那骨传导开放式蓝牙耳机S2S",
+            "color": "阳谷米",
+            "stock": 122,
+            "price": "189"
+          }
+        ]
+      }
+    }
   }
 ]
