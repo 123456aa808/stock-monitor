@@ -124,7 +124,7 @@ def check_and_notify():
 
 # 高频检查函数
 def main():
-    interval = 15  # 每15秒检查一次
+    interval = 3  # 每3秒检查一次
     
     # 发送开始通知
     start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
