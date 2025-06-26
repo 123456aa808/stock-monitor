@@ -2,6 +2,10 @@ import requests
 import json
 import os
 import time
+import hmac
+import hashlib
+import base64
+import urllib.parse
 from datetime import datetime
 
 # 配置信息
@@ -112,6 +116,51 @@ def send_email_notification(subject, content):
         print(f"邮件发送失败: {e}")
         return False
 
+# 发送钉钉通知
+def send_dingtalk_notification(title, content):
+    webhook = os.environ.get("DINGTALK_WEBHOOK", "https://oapi.dingtalk.com/robot/send?access_token=8a3d89e7c3fc6458cbfbea977f4223843ff5e07cffa3698769c5140f5bc8909d")
+    secret = os.environ.get("DINGTALK_SECRET", "SECf0d625260b644e3bb349f43a19ff887c6eb44056a926c6c5cda49dfae2582746")
+    
+    if not webhook:
+        print("钉钉配置不完整，跳过通知")
+        return False
+    
+    # 构建通知内容
+    message = {
+        "msgtype": "markdown",
+        "markdown": {
+            "title": title,
+            "text": f"### {title}\n\n{content}"
+        },
+        "at": {
+            "isAtAll": False
+        }
+    }
+    
+    # 计算签名（如果使用加签安全模式）
+    timestamp = str(round(time.time() * 1000))
+    if secret:
+        string_to_sign = f"{timestamp}\n{secret}"
+        hmac_code = hmac.new(secret.encode(), string_to_sign.encode(), digestmod=hashlib.sha256).digest()
+        sign = urllib.parse.quote_plus(base64.b64encode(hmac_code).decode())
+        webhook_url = f"{webhook}&timestamp={timestamp}&sign={sign}"
+    else:
+        webhook_url = webhook
+    
+    # 发送请求
+    try:
+        response = requests.post(webhook_url, json=message, headers={"Content-Type": "application/json"})
+        result = response.json()
+        if result.get("errcode") == 0:
+            print("钉钉通知发送成功")
+            return True
+        else:
+            print(f"钉钉通知发送失败: {result.get('errmsg')}")
+            return False
+    except Exception as e:
+        print(f"钉钉通知发送异常: {e}")
+        return False
+
 # 保存结果到历史记录
 def save_history(results):
     history_file = "stock_history.json"
@@ -214,25 +263,32 @@ def main():
     if stock_items:
         # 构建通知内容
         title = f"🔔 发现{len(stock_items)}个商品有库存!"
-        content = "【库存监控通知】\n\n"
+        content = "**【库存监控通知】**\n\n"
         
         for item in stock_items:
-            content += f"商品: {item['name']}\n"
-            content += f"型号: {item['model']}\n"
-            content += f"颜色: {item['color']}\n"
-            content += f"库存: {item['stock']}件\n"
-            content += f"价格: {item['price']}元\n"
-            content += f"链接: https://card.10010.com/terminal/hs?goodsId={item['id']}\n\n"
+            content += f"**商品**: {item['name']}\n\n"
+            content += f"**型号**: {item['model']}\n\n"
+            content += f"**颜色**: {item['color']}\n\n"
+            content += f"**库存**: {item['stock']}件\n\n"
+            content += f"**价格**: {item['price']}元\n\n"
+            content += f"**链接**: [点击购买](https://card.10010.com/terminal/hs?goodsId={item['id']})\n\n"
+            content += "---\n\n"
         
         # 发送通知
         send_wxpusher_notification(title, content)
         send_email_notification(title, content)
+        send_dingtalk_notification(title, content)
     
     # 打印结果摘要
     print("\n检查结果摘要:")
     for name, info in all_results.items():
         status = "有库存" if info["has_stock"] else "无库存"
         print(f"{name}: {status}")
+    
+    # 测试钉钉通知
+    test_title = "库存监控测试通知"
+    test_content = "这是一条测试通知，确认钉钉机器人配置成功！\n\n当前时间: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    send_dingtalk_notification(test_title, test_content)
     
     return "检查完成"
 
