@@ -19,6 +19,9 @@ CITY_CODE = "110"  # 北京
 DINGTALK_WEBHOOK = "https://oapi.dingtalk.com/robot/send?access_token=8a3d89e7c3fc6458cbfbea977f4223843ff5e07cffa3698769c5140f5bc8909d"
 DINGTALK_SECRET = "SECf0d625260b644e3bb349f43a19ff887c6eb44056a926c6c5cda49dfae2582746"
 
+# 存储上次检查的库存状态
+last_stock_status = {}
+
 # 检查库存
 def check_stock(goods_id, city_code=CITY_CODE):
     url = f"https://card.10010.com/mall-order/qryStock/v2?goodsId={goods_id}&cityCode={city_code}&isUni="
@@ -28,26 +31,19 @@ def check_stock(goods_id, city_code=CITY_CODE):
         data = response.json()
         
         if data["code"] == "0000" and data["data"] and data["data"]["bareMetal"]:
-            models = data["data"]["bareMetal"]["modelsList"]
-            results = []
-            
-            for model in models:
+            # 计算总库存
+            total_stock = 0
+            for model in data["data"]["bareMetal"]["modelsList"]:
                 stock_amount = (model.get("articleAmount", 0) or 0) + (model.get("articleAmountNew", 0) or 0)
-                model_info = {
-                    "model": model.get("MODEL_DESC", "未知型号"),
-                    "color": model.get("COLOR_DESC", "未知颜色"),
-                    "stock": stock_amount,
-                    "price": model.get("TERM_PRICE", "未知价格")
-                }
-                results.append(model_info)
+                total_stock += stock_amount
             
-            return results
+            return total_stock
         
-        return []
+        return 0
     
     except Exception as e:
         print(f"检查库存出错: {e}")
-        return []
+        return 0
 
 # 发送钉钉通知
 def send_dingtalk_notification(title, content):
@@ -80,47 +76,51 @@ def send_dingtalk_notification(title, content):
 
 # 主函数
 def check_and_notify():
+    global last_stock_status
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"开始检查库存: {current_time}")
     
     # 检查所有商品
+    stock_changes = []
+    current_stock_items = []
+    
     for goods in GOODS_LIST:
         goods_id = goods["id"]
         goods_name = goods["name"]
         
         print(f"检查商品: {goods_name}")
-        models_info = check_stock(goods_id)
+        total_stock = check_stock(goods_id)
         
-        # 发送每个商品的库存状态
-        content = f"**商品**: {goods_name}\n\n**检查时间**: {current_time}\n\n"
+        # 检查库存状态是否变化
+        if goods_id in last_stock_status:
+            last_stock = last_stock_status[goods_id]
+            if last_stock == 0 and total_stock > 0:
+                # 由无库存变为有库存
+                stock_changes.append(f"**{goods_name}** 有库存了！库存数量: {total_stock}件")
+            elif last_stock > 0 and total_stock == 0:
+                # 由有库存变为无库存
+                stock_changes.append(f"**{goods_name}** 已无库存")
         
-        if not models_info:
-            content += "**状态**: 查询失败或无数据\n\n"
-            send_dingtalk_notification(f"{goods_name} 库存查询", content)
-            continue
+        # 更新库存状态
+        last_stock_status[goods_id] = total_stock
         
-        has_stock = False
-        for model in models_info:
-            stock_amount = model["stock"]
-            content += f"**型号**: {model['model']}\n\n"
-            content += f"**颜色**: {model['color']}\n\n"
-            content += f"**库存**: {stock_amount}件\n\n"
-            content += f"**价格**: {model['price']}元\n\n"
-            content += "---\n\n"
-            
-            if stock_amount > 0:
-                has_stock = True
+        # 记录当前有库存的商品
+        if total_stock > 0:
+            current_stock_items.append(f"**{goods_name}**: {total_stock}件")
+    
+    # 如果有库存变化，发送通知
+    if stock_changes:
+        content = "**库存变化通知**\n\n"
+        content += "\n\n".join(stock_changes)
+        content += "\n\n---\n\n"
         
-        # 添加购买链接
-        content += f"**链接**: [点击购买](https://card.10010.com/terminal/hs?goodsId={goods_id})\n\n"
-        
-        # 发送通知
-        if has_stock:
-            title = f"🔔 {goods_name} 有库存!"
+        if current_stock_items:
+            content += "**当前有库存商品**\n\n"
+            content += "\n\n".join(current_stock_items)
         else:
-            title = f"{goods_name} 暂无库存"
+            content += "**当前所有商品均无库存**"
         
-        send_dingtalk_notification(title, content)
+        send_dingtalk_notification("库存状态变化", content)
 
 # 高频检查函数
 def main():
@@ -128,7 +128,7 @@ def main():
     
     # 发送开始通知
     start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    send_dingtalk_notification("库存监控开始", f"开始时间: {start_time}\n\n将每{interval}秒检查一次")
+    send_dingtalk_notification("库存监控开始", f"开始时间: {start_time}")
     
     try:
         # 无限循环检查，直到GitHub Actions超时或被终止
