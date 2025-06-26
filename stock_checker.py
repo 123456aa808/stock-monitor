@@ -6,7 +6,7 @@ import hmac
 import hashlib
 import base64
 import urllib.parse
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # 配置信息
 GOODS_LIST = [
@@ -24,6 +24,14 @@ DINGTALK_SECRET = "SECf0d625260b644e3bb349f43a19ff887c6eb44056a926c6c5cda49dfae2
 
 # 存储上次检查的库存状态
 last_stock_status = {}
+
+# 获取中国时间
+def get_china_time():
+    # 获取UTC时间
+    utc_time = datetime.utcnow()
+    # 转换为中国时间 (UTC+8)
+    china_time = utc_time + timedelta(hours=8)
+    return china_time
 
 # 检查库存
 def check_stock(goods_id, city_code=CITY_CODE):
@@ -80,12 +88,13 @@ def send_dingtalk_notification(title, content):
 # 主函数
 def check_and_notify():
     global last_stock_status
-    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    current_time = get_china_time().strftime("%Y-%m-%d %H:%M:%S")
     print(f"开始检查库存: {current_time}")
     
     # 检查所有商品
     stock_changes = []
     current_stock_items = []
+    out_of_stock_items = []
     
     for goods in GOODS_LIST:
         goods_id = goods["id"]
@@ -110,6 +119,8 @@ def check_and_notify():
         # 记录当前有库存的商品
         if total_stock > 0:
             current_stock_items.append(f"**{goods_name}**: {total_stock}件")
+        else:
+            out_of_stock_items.append(f"**{goods_name}**")
     
     # 如果有库存变化，发送通知
     if stock_changes:
@@ -117,11 +128,20 @@ def check_and_notify():
         content += "\n\n".join(stock_changes)
         content += "\n\n---\n\n"
         
+        # 添加当前有库存商品
         if current_stock_items:
             content += "**当前有库存商品**\n\n"
             content += "\n\n".join(current_stock_items)
         else:
             content += "**当前所有商品均无库存**"
+        
+        # 添加待补货商品
+        content += "\n\n---\n\n"
+        if out_of_stock_items:
+            content += "**待补货商品**\n\n"
+            content += "\n\n".join(out_of_stock_items)
+        else:
+            content += "**所有商品均有库存**"
         
         send_dingtalk_notification("库存状态变化", content)
 
@@ -130,8 +150,8 @@ def main():
     interval = 5  # 每5秒检查一次
     
     # 发送开始通知
-    start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    send_dingtalk_notification("库存监控开始", f"开始时间: {start_time}")
+    start_time = get_china_time().strftime("%Y-%m-%d %H:%M:%S")
+    send_dingtalk_notification("库存监控开始", f"开始时间: {start_time} (北京时间)")
     
     try:
         # 无限循环检查，直到GitHub Actions超时或被终止
