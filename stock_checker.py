@@ -29,8 +29,6 @@ DINGTALK_SECRET = "SECf0d625260b644e3bb349f43a19ff887c6eb44056a926c6c5cda49dfae2
 
 # 存储上次检查的库存状态
 last_stock_status = {}
-# 存储是否已经发送过路由器低库存通知
-router_low_stock_notified = {}
 
 # 获取中国时间
 def get_china_time():
@@ -91,7 +89,7 @@ def send_dingtalk_notification(title, content, webhook, secret):
 
 # 检查商品组并发送通知
 def check_goods_group(goods_list, webhook, secret, group_name):
-    global last_stock_status, router_low_stock_notified
+    global last_stock_status
     current_time = get_china_time().strftime("%Y-%m-%d %H:%M:%S")
     print(f"开始检查{group_name}库存: {current_time}")
     
@@ -108,55 +106,40 @@ def check_goods_group(goods_list, webhook, secret, group_name):
         print(f"检查商品: {goods_name}")
         total_stock = check_stock(goods_id)
         
+        # 判断商品是否"有货"（对于路由器，库存>=10才算有货）
+        has_stock = total_stock >= min_threshold
+        
         # 检查库存状态是否变化
         if goods_id in last_stock_status:
-            last_stock = last_stock_status[goods_id]
+            last_has_stock = last_stock_status[goods_id] >= min_threshold
             
-            # 路由器特殊处理：只有当库存大于等于阈值时才通知
-            if "路由器" in goods_name:
-                if last_stock < min_threshold and total_stock >= min_threshold:
-                    # 路由器库存从低于阈值变为高于阈值
+            if not last_has_stock and has_stock:
+                # 由无货变为有货
+                if "路由器" in goods_name:
                     stock_changes.append(f"**{goods_name}** 库存充足！当前库存: {total_stock}件")
-                    router_low_stock_notified[goods_id] = False
-                elif last_stock >= min_threshold and total_stock < min_threshold:
-                    # 路由器库存从高于阈值变为低于阈值
-                    if total_stock > 0:
-                        # 如果还有库存但低于阈值，且之前没有通知过
-                        if not router_low_stock_notified.get(goods_id, False):
-                            stock_changes.append(f"**{goods_name}** 库存不足，仅剩: {total_stock}件")
-                            router_low_stock_notified[goods_id] = True
-                    else:
-                        # 完全无库存
-                        stock_changes.append(f"**{goods_name}** 已无库存")
-                        router_low_stock_notified[goods_id] = False
-            else:
-                # 普通商品处理
-                if last_stock == 0 and total_stock > 0:
-                    # 由无库存变为有库存
+                else:
                     stock_changes.append(f"**{goods_name}** 有库存了！库存数量: {total_stock}件")
-                elif last_stock > 0 and total_stock == 0:
-                    # 由有库存变为无库存
+            elif last_has_stock and not has_stock:
+                # 由有货变为无货
+                if "路由器" in goods_name and total_stock > 0:
+                    stock_changes.append(f"**{goods_name}** 库存不足，仅剩: {total_stock}件")
+                else:
                     stock_changes.append(f"**{goods_name}** 已无库存")
         else:
             # 首次检查
-            if "路由器" in goods_name:
-                if total_stock >= min_threshold:
+            if has_stock:
+                if "路由器" in goods_name:
                     stock_changes.append(f"**{goods_name}** 库存充足！当前库存: {total_stock}件")
-                    router_low_stock_notified[goods_id] = False
-                elif total_stock > 0:
-                    # 有库存但不足阈值，不通知
-                    router_low_stock_notified[goods_id] = True
-            elif total_stock > 0:
-                stock_changes.append(f"**{goods_name}** 有库存！库存数量: {total_stock}件")
+                else:
+                    stock_changes.append(f"**{goods_name}** 有库存！库存数量: {total_stock}件")
         
         # 更新库存状态
         last_stock_status[goods_id] = total_stock
         
         # 记录当前有库存的商品
         if total_stock > 0:
-            # 对于路由器，显示是否达到阈值
             if "路由器" in goods_name:
-                if total_stock >= min_threshold:
+                if has_stock:
                     current_stock_items.append(f"**{goods_name}**: {total_stock}件 (库存充足)")
                 else:
                     current_stock_items.append(f"**{goods_name}**: {total_stock}件 (库存不足)")
@@ -194,7 +177,7 @@ def main():
     
     # 发送开始通知
     start_time = get_china_time().strftime("%Y-%m-%d %H:%M:%S")
-    send_dingtalk_notification("库存监控开始", f"开始时间: {start_time} (北京时间)\n\n注意：路由器商品只在库存大于10件时才会通知", DINGTALK_WEBHOOK, DINGTALK_SECRET)
+    send_dingtalk_notification("库存监控开始", f"开始时间: {start_time} (北京时间)\n\n注意：路由器商品库存大于等于10件才视为有货", DINGTALK_WEBHOOK, DINGTALK_SECRET)
     
     try:
         # 无限循环检查，直到GitHub Actions超时或被终止
