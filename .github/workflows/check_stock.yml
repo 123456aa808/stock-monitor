@@ -32,6 +32,9 @@ jobs:
           EMAIL_RECEIVER: ${{ secrets.EMAIL_RECEIVER }}
           DINGTALK_WEBHOOK: ${{ secrets.DINGTALK_WEBHOOK }}
           DINGTALK_SECRET: ${{ secrets.DINGTALK_SECRET }}
+          RAPID_CHECK: "true"       # 启用高频检查
+          CHECK_DURATION: "300"     # 持续5分钟
+          CHECK_INTERVAL: "15"      # 每15秒检查一次
         run: python stock_checker.py
         
       - name: Commit and push history files
